@@ -1,0 +1,76 @@
+Zadanie2 mysql 
+
+#zadanie 1 a
+SELECT * FROM postac ORDER BY wiek DESC;
+DELETE FROM postac WHERE wiek=99;
+DELETE FROM postac WHERE wiek=98;
+
+#zadanie 1 b
+SHOW CREATE TABLE postac;
+ALTER TABLE postac DROP FOREIGN KEY postac_ibfk_1;
+ALTER TABLE postac DROP primary key;
+ALTER TABLE postac MODIFY id_postaci int;
+ALTER TABLE przetwory DROP FOREIGN KEY przetwory_ibfk_1;
+ALTER TABLE przetwory DROP FOREIGN KEY przetwory_ibfk_2;
+ALTER TABLE walizka DROP FOREIGN KEY walizka_ibfk_1;
+#zadanie 2 a
+
+ALTER TABLE postac ADD COLUMN pesel BIGINT(11);
+UPDATE postac SET pesel='11223344556' +id_postaci;
+ALTER TABLE postac ADD Primary key(pesel);
+
+#zadanie 2 b
+
+ALTER TABLE postac MODIFY rodzaj ENUM('wiking','ptak','kobieta','syrena');
+
+#zadanie 2 c
+
+INSERT INTO postac VALUES(default,'Gertruda Nieszczera,'syrena','1982-08-12',39,null,null,'11111111111');
+UPDATE postac SET id_postaci=6 WHERE nazwa='Gertruda Nieszczera';
+
+#zadanie 3 a
+UPDATE postac SET nazwa='Alvi' WHERE nazwa='Boe';
+UPDATE postac SET nazwa='Amundi' WHERE nazwa='Hall';
+
+UPDATE postac SET nazwa_statku=1 WHERE nazwa like 'a%';
+
+#zadanie 3b
+INSERT INTO statek VALUES(default,'Drakkar','1911-04-11',60);
+UPDATE statek SET max_ladownosc=max_ladownosc * 0.7 WHERE data_wodowania >= '1901-01-01' AND data_wodowania <= '2000-12-31';
+
+#zadanie 3 c
+CHECK()
+
+#zadanie 4 a
+
+ALTER TABLE postac MODIFY rodzaj ENUM('wiking','ptak','kobieta','syrena','waz');
+INSERT INTO postac VALUES(default,'Loko','waz','1999-03-03',22,NULL,NULL,66666666666);
+UPDATE postac SET id_postaci=6 WHERE nazwa='Loko';
+
+#zadanie 4 b
+CREATE TABLE marynarz LIKE postac;
+INSERT INTO marynarz SELECT * FROM postac WHERE nazwa_statku IS NOT NULL;
+
+#zadanie 5 a
+
+UPDATE postac SET nazwa_statku=NULL WHERE nazwa_statku IS NOT NULL;
+
+#zadanie 5 b 
+
+DELETE from postac WHERE wiek=96;
+
+#zadanie 5 c
+
+ALTER TABLE postac DROP COLUMN nazwa_statku;
+
+#zadanie 5 d
+
+DROP TABLE statek;
+
+#zadanie 5 e 
+
+CREATE TABLE zwierz (id INT AUTO_INCREMENT PRIMARY KEY, nazwa VARCHAR(100), wiek TINYINT UNSIGNED);
+
+#zadanie 5 f
+
+INSERT INTO zwierz VALUES(default,'Loko',22),(default,'Drozd',32);
