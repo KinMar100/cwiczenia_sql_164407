@@ -1,2 +1,2 @@
 # cwiczenia_sql_164407
-Ćwiczenia na bazy danych
+Ćwiczenia  i zadania na bazy danych - KINGA MARKOWSKA gr 4 ISI 1 sem
