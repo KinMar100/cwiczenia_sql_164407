@@ -1,0 +1,199 @@
+#github.com/kropiak/zri_bazy/tree/master/lab_2
+
+#___________________________________________________________________________________________________________________________________________________________________________________________
+
+#ZADANIA cz.1
+
+
+USE __firma_zti;
+
+SHOW tables;
+
+SELECT * FROM pracownik;
+
+#punkt 1
+
+SELECT nazwisko FROM pracownik ORDER BY nazwisko ASC;
+
+#punkt 2
+
+SELECT * FROM pracownik;
+
+SELECT imie, nazwisko, pensja FROM pracownik WHERE YEAR(data_urodzenia)>1979 ORDER BY data_urodzenia ASC;
+
+#punkt 3
+
+SELECT * FROM pracownik WHERE pensja BETWEEN 3500 AND 5000;
+
+#punkt 4
+
+SELECT towar FROM stan_magazynowy WHERE ilosc>10;
+
+#punkt 5 
+
+SELECT * FROM towar;
+
+SELECT * FROM towar WHERE nazwa_towaru LIKE 'A%' OR nazwa_towaru LIKE 'B%' OR nazwa_towaru LIKE 'C%' ORDER BY nazwa_towaru ASC;
+
+#punkt 6
+
+SELECT * FROM klient;
+
+SELECT pelna_nazwa, czy_firma FROM klient WHERE czy_firma = 0 OR nip IS NULL;
+
+#punkt 7
+
+SELECT * FROM zamowienie;
+
+SELECT numer_zamowienia,data_zamowienia FROM zamowienie ORDER BY data_zamowienia DESC Limit 0,10;
+
+#punkt 8 
+
+SELECT * FROM pracownik;
+
+SELECT CONCAT(imie,'-',nazwisko) AS imie_i_nazwisko,
+ pensja FROM pracownik ORDER BY pensja ASC LIMIT 5;
+ 
+#punkt 9 
+
+SELECT * FROM towar;
+
+SELECT nazwa_towaru,cena_zakupu FROM towar WHERE nazwa_towaru NOT LIKE '%a%' ORDER BY cena_zakupu DESC LIMIT 10;
+
+#punkt 10
+
+show tables;
+SELECT * FROM towar;
+SELECT * FROM jednostka_miary;
+SELECT * FROM stan_magazynowy;
+
+SELECT nazwa_towaru, kategoria FROM towar WHERE kategoria=3 ORDER BY nazwa_towaru ASC;
+SELECT nazwa_towaru, kategoria FROM towar WHERE kategoria=3 ORDER BY nazwa_towaru DESC;
+#SELECT distinct(t.nazwa_towaru),kategoria FROM towar t LEFT JOIN stan_magazynowy sm ON t.kategoria=sm.jm LEFT JOIN jednostka_miary jm ON sm.jm=jm.id_jednostki WHERE kategoria=3 ORDER BY nazwa_towaru ASC;
+#SELECT distinct(t.nazwa_towaru),kategoria FROM towar t LEFT JOIN stan_magazynowy sm ON t.kategoria=sm.jm LEFT JOIN jednostka_miary jm ON sm.jm=jm.id_jednostki WHERE kategoria=3 ORDER BY nazwa_towaru DESC;
+
+#punkt 11
+SELECT * FROM towar;
+
+CREATE TABLE markowskak.towary_powyzej_100 AS(SELECT * FROM __firma_zti.towar WHERE cena_zakupu >= 100);
+
+SELECT * FROM markowskak.towary_powyzej_100;
+
+#punkt 12
+
+CREATE TABLE markowskak.pracownik_50_plus LIKE __firma_zti.pracownik;
+
+SELECT * FROM markowskak.pracownik_50_plus;
+
+INSERT INTO markowskak.pracownik_50_plus SELECT*FROM pracownik WHERE YEAR(curdate())-YEAR(data_urodzenia) >=50;
+
+#___________________________________________________________________________________________________________________________________________________________________________________________
+
+#ZADANIA cz.2
+
+
+#punkt 1
+
+SELECT * FROM pracownik;
+SELECT * FROM dzial;
+
+SELECT imie,nazwisko,d.nazwa FROM pracownik p INNER JOIN dzial d ON p.dzial=d.id_dzialu;
+
+#punkt 2
+
+SELECT * FROM towar;
+
+SELECT * FROM kategoria;
+
+SELECT * FROM stan_magazynowy;
+SELECT t.nazwa_towaru, k.nazwa_kategori,sm.ilosc FROM towar t 
+INNER JOIN kategoria k ON t.kategoria=k.id_kategori 
+INNER JOIN stan_magazynowy sm ON t.id_towaru=sm.towar 
+ORDER BY sm.ilosc DESC;
+
+
+#punkt 3
+
+SELECT * FROM zamowienie;
+ 
+SELECT * FROM status_zamowienia;
+
+SELECT * FROM zamowienie z 
+INNER JOIN status_zamowienia sz 
+ON z.status_zamowienia=sz.id_statusu_zamowienia 
+WHERE sz.nazwa_statusu_zamowienia='anulowane';
+
+
+#punkt 4
+
+SELECT * FROM adres_klienta;
+
+SELECT * FROM klient;
+
+SELECT * FROM klient k 
+INNER JOIN adres_klienta ak 
+ON k.id_klienta=ak.klient 
+WHERE miejscowosc='Olsztyn';
+
+
+#punkt 5
+
+
+SELECT * FROM stan_magazynowy;
+
+SELECT * FROM jednostka_miary;
+
+SELECT jm.nazwa FROM stan_magazynowy sm 
+RIGHT JOIN jednostka_miary jm 
+ON sm.jm=jm.id_jednostki WHERE jm IS NULL;
+
+
+#punkt 6
+
+SELECT * FROM stan_magazynowy;
+
+SELECT * FROM zamowienie;
+
+SELECT * FROM towar;
+
+SELECT * FROM pozycja_zamowienia;
+
+SELECT z.numer_zamowienia, t.nazwa_towaru,sm.ilosc, t.cena_zakupu
+FROM zamowienie z 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.id_pozycji 
+INNER JOIN towar t ON pz.towar=t.id_towaru 
+INNER JOIN stan_magazynowy sm ON t.id_towaru=sm.ilosc WHERE YEAR(z.data_zamowienia)=2018;
+
+#punkt 7
+
+SELECT * FROM kategoria;
+
+SELECT * FROM towar;
+
+SELECT * FROM stan_magazynowy;
+
+CREATE TABLE markowskak.towary_full_info AS
+ (SELECT t.nazwa_towaru, t.cena_zakupu, k.nazwa_kategori, sm.ilosc, jm.nazwa 
+ FROM towar t 
+ INNER JOIN kategoria k ON t.kategoria=k.id_kategori 
+ INNER JOIN stan_magazynowy sm ON t.id_towaru=sm.towar 
+ INNER JOIN jednostka_miary jm ON sm.jm=jm.nazwa);
+
+#punkt 8
+
+SELECT * FROM zamowienie;
+
+SELECT * FROM pozycja_zamowienia;
+
+SELECT * FROM pozycja_zamowienia pz inner JOIN zamowienie z ON pz.zamowienie=z.id_zamowienia ORDER BY data_zamowienia ASC LIMIT 5;
+
+#punkt 9
+
+SELECT * FROM status_zamowienia;
+
+SELECT * FROM zamowienie z INNER JOIN status_zamowienia sz ON z.status_zamowienia=sz.id_statusu_zamowienia WHERE nazwa_statusu_zamowienia NOT LIKE 'zrealizowane';
+
+
+#punkt 10
+
+SELECT * from adres_klienta where kod not like '__-___';
