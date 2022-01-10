@@ -1,0 +1,73 @@
+#lab_3_zadania_1
+
+
+
+
+#Zadanie 1
+
+SELECT imie,nazwisko, year(data_urodzenia) AS rok_urodzenia FROM pracownik;
+
+#Zadanie 2
+
+SELECT imie,nazwisko, Year(curdate())-Year(data_urodzenia) AS wiek_pracownika FROM pracownik;
+
+#Zadanie 3
+
+SELECT * FROM pracownik;
+SELECT * FROM dzial;
+SELECT d.nazwa, count(p.dzial) from dzial d INNER JOIN pracownik p ON p.dzial=id_dzialu GROUP BY dzial;
+
+#Zadanie 4
+
+SELECT * FROM kategoria;
+SELECT * FROM towar;
+SELECT k.nazwa_kategori, count(t.kategoria) AS liczba_produktow
+FROM towar t INNER JOIN kategoria k 
+ON t.kategoria=k.id_kategori GROUP BY kategoria;
+
+#Zadanie 5
+
+SELECT k.nazwa_kategori, group_concat(t.nazwa_towaru) FROM towar t INNER JOIN kategoria k 
+ON t.kategoria=k.id_kategori GROUP BY kategoria; 
+
+#Zadanie 6
+
+SELECT round(avg(pensja),2) from pracownik;
+
+#Zadanie 7
+
+SELECT * FROM pracownik;
+SELECT avg(pensja) FROM pracownik WHERE YEAR(curdate())-YEAR(data_zatrudnienia) >=5;
+
+#Zadanie 8
+
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM towar;
+
+SELECT nazwa_towaru, count(zamowienie) 
+AS ilosc_zamowien FROM towar t INNER JOIN pozycja_zamowienia pz 
+ON t.id_towaru=pz.towar GROUP BY nazwa_towaru ORDER BY ilosc_zamowien DESC LIMIT 10;
+
+#Zadanie 9
+
+SELECT * FROM zamowienie;
+SELECT * FROM pozycja_zamowienia;
+
+SELECT DISTINCT(pz.zamowienie), data_zamowienia , z.numer_zamowienia, sum(cena) 
+FROM zamowienie z INNER JOIN pozycja_zamowienia pz 
+ON z.id_zamowienia=pz.zamowienie WHERE data_zamowienia 
+BETWEEN '2017-01-01' AND '2017-03-31' GROUP BY zamowienie;
+
+
+#Zadanie 10
+
+SELECT * FROM zamowienie;
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM pracownik;
+
+
+SELECT DISTINCT(pracownik_id_pracownika), imie, nazwisko, sum(cena)
+FROM zamowienie z INNER JOIN pracownik p
+ON z.pracownik_id_pracownika=p.id_pracownika 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie 
+GROUP BY pracownik_id_pracownika ORDER BY sum(cena) DESC; #??
