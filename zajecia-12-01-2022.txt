@@ -1,0 +1,109 @@
+use __firma_zti;
+
+#lab_3_zadania_2
+
+#Zadanie 1  Wyświetl nazwę działu i minimalną,
+# 			maksymalną i średnią wartość pensji w każdym dziale.
+
+SELECT * FROM dzial; #nazwa
+SELECT * FROM pracownik;
+
+SELECT d.nazwa, min(pensja) AS najmniejsza_pensja, max(pensja) 
+AS najwieksza_pensja, avg(pensja) AS srednia_pensja FROM dzial d 
+INNER JOIN pracownik p ON d.id_dzialu=p.dzial GROUP BY dzial;
+
+
+#Zadanie 2  Wyświetl pełną nazwę klienta, 
+#			wartość zamówienia dla 10 najwyższych wartości zamówienia.
+
+SELECT * FROM klient;
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+
+SELECT DISTINCT(k.pelna_nazwa), sum(ilosc*cena) FROM zamowienie z 
+INNER JOIN klient k ON z.klient=id_klienta INNER JOIN pozycja_zamowienia pz 
+ON z.id_zamowienia=pz.zamowienie GROUP BY zamowienie ORDER BY sum(ilosc*cena) DESC LIMIT 10;
+
+
+
+
+#Zadanie 3  Wyświetl wartość przychodu dla każdego roku.
+#			Dane posortuj malejąco według sumy wartości zamówień.
+
+SELECT * FROM pracownik;
+SELECT * FROM klient;
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+SELECT * FROM status_zamowienia;
+
+SELECT DISTINCT(YEAR(z.data_zamowienia)), sum(ilosc*cena) 
+FROM zamowienie z INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie 
+INNER JOIN status_zamowienia sz ON z.status_zamowienia=sz.id_statusu_zamowienia 
+WHERE nazwa_statusu_zamowienia NOT LIKE 'anulowane' GROUP BY YEAR(z.data_zamowienia) ORDER BY sum(ilosc*cena) DESC ;
+
+
+
+#Zadanie 4  Wyświetl sumę wartości wszystkich anulowanych zamówień.
+
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+SELECT * FROM status_zamowienia;
+
+SELECT sum(ilosc*cena) AS wartosc_anulowanych FROM zamowienie z 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie 
+INNER JOIN status_zamowienia sz ON z.status_zamowienia=sz.id_statusu_zamowienia WHERE nazwa_statusu_zamowienia ='anulowane';
+
+
+
+
+#Zadanie 5  Wyświetl liczbę zamówień i sumę zamówień dla każdego 
+# 			miasta z podstawowego adresu klientów.
+
+
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+SELECT * FROM status_zamowienia;
+SELECT * FROM adres_klienta;
+SELECT * FROM klient;
+
+SELECT ak.miejscowosc, count(id_zamowienia), sum(ilosc*cena) FROM adres_klienta ak 
+INNER JOIN klient k ON ak.klient=k.id_klienta 
+INNER JOIN zamowienie z ON k.id_klienta=z.klient 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie GROUP BY ak.miejscowosc;
+
+##COS NIE TAK WYSZLO
+
+#Zadanie 6  Wyświetl dotychczasowy dochód firmy biorąc pod uwagę 
+# 			tylko zamówienia zrealizowane.
+
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+SELECT * FROM status_zamowienia;
+SELECT * FROM adres_klienta;
+SELECT * FROM klient;
+SELECT * FROM dzial;
+SELECT * FROM towar;
+
+SELECT sum(ilosc*cena)-sum(cena_zakupu*ilosc) FROM zamowienie z 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie
+INNER JOIN status_zamowienia sz ON z.status_zamowienia=sz.id_statusu_zamowienia
+INNER JOIN towar t ON t.id_towaru=pz.towar
+WHERE nazwa_statusu_zamowienia LIKE 'zrealizowane';
+
+
+#Zadanie 7  Policz i wyświetl dochód (przychód z zamówień i cena zakupu towaru)
+#			w każdym roku działalności firmy.
+
+SELECT DISTINCT(YEAR(data_zamowienia)), sum(ilosc*cena)-sum(cena_zakupu*ilosc) FROM zamowienie z 
+INNER JOIN pozycja_zamowienia pz ON z.id_zamowienia=pz.zamowienie
+INNER JOIN status_zamowienia sz ON z.status_zamowienia=sz.id_statusu_zamowienia
+INNER JOIN towar t ON t.id_towaru=pz.towar WHERE nazwa_statusu_zamowienia LIKE 'zrealizowane' GROUP BY YEAR(data_zamowienia);
+
+SELECT * FROM pozycja_zamowienia;
+SELECT * FROM zamowienie;
+SELECT * FROM status_zamowienia;
+SELECT * FROM adres_klienta;
+SELECT * FROM klient;
+SELECT * FROM dzial;
+SELECT * FROM towar;
+		 Nie aż tak trudne jak poszukać odpowiedniej funkcji operującej na datach.
